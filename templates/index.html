@@ -1,0 +1,34 @@
+<!doctype html>
+
+<textarea cols="80" rows="40" id="khl"></textarea>
+
+<button onclick="submit_entry();">Submit</button>
+
+<pre>Lean: <br><span id="myText"></span></pre>
+<script>
+    function submit_entry() {
+        
+        var name = document.getElementById("khl");
+        var entry = {name : name.value}
+        fetch(`${window.origin}/create`, {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify(entry),
+            cache:"no-cache",
+            headers: new Headers({
+                "content-type" : "application/json"
+            })
+        }).then(function (response) {
+            if (response.status != 200){
+                console.log("cringe");
+                return;
+            }
+            response.json().then(function (data) {
+                console.log(data)
+                document.getElementById("myText").innerHTML = data["message"];            })
+        })
+    }
+</script>
+
+
+
