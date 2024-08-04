@@ -4,7 +4,11 @@
 
 <button onclick="submit_entry();">Submit</button>
 
-<pre>Lean: <br><span id="myText"></span></pre>
+<h2>Number of errors:<span id="Errors"></span> </h2>
+<h2>Number of sorries:<span id="Sorries"></span> </h2>
+<pre>Lean: <br><span id="Lean"></span></pre>
+<pre>Output: <br><span id="Repl"></span></pre>
+
 <script>
     function submit_entry() {
         
@@ -25,7 +29,12 @@
             }
             response.json().then(function (data) {
                 console.log(data)
-                document.getElementById("myText").innerHTML = data["message"];            })
+                document.getElementById("Lean").innerHTML = data["lean"];
+                document.getElementById("Repl").innerHTML = data["repl"];
+                document.getElementById("Errors").innerHTML = data["errors"];
+                document.getElementById("Sorries").innerHTML = data["sorries"];
+            })
+
         })
     }
 </script>
