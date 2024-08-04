@@ -1,0 +1,53 @@
+//Copied from the Sympy parser
+
+%ignore WS_INLINE
+
+?start: expr
+    | start "\Rightarrow" expr -> implies
+    | start "\implies" expr -> implies
+    | start "\Leftarrow" expr -> impliedby
+    | start "\impliedby" expr -> impliedby
+    | start "\Leftrightarrow" expr -> iff
+    | start "\iff" expr -> iff
+
+
+?expr : sum
+    | expr "=" sum    -> eq
+    | expr "<" sum    -> le
+    | expr "≤" sum -> leq 
+    | expr ">" sum -> ge
+    | expr "≥" sum -> geq
+
+
+
+?sum: bigop
+    | sum "+" bigop   -> add
+    | sum "-" bigop   -> sub
+    
+?bigop: prod
+    | "∑" atom "∈ Finset.Icc" sum" "atom"," bigop -> bigsum
+    | "∏" atom "∈ Finset.Icc" sum" "atom"," bigop -> bigprod
+
+
+?prod: pow
+    | bigop "*" bigop  -> mul
+    | bigop "/" bigop  -> div
+
+?pow: atom
+    | pow "^" atom -> pow
+    | "√" atom -> sqrt
+
+?atom: NUMBER           -> number
+    | "-" atom         -> neg
+    | LETTER             -> var
+    | LETTER " "sum-> var
+    | "(" sum ")"  -> bracket
+    | "[" sum "]" -> bracket
+    | "{" start "}" -> bracket
+    | "_" -> underscore
+
+
+%import common.LETTER
+%import common.NUMBER
+%import common.WS_INLINE
+

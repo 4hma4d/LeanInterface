@@ -1,0 +1,66 @@
+//Copied from the Sympy parser
+
+%ignore /[ \t\n\r]+/
+
+%ignore "\\," | "\\thinspace" | "\\:" | "\\medspace" | "\\;" | "\\thickspace"
+%ignore "\\quad" | "\\qquad"
+%ignore "\\!" | "\\negthinspace" | "\\negmedspace" | "\\negthickspace"
+%ignore "\\vrule" | "\\vcenter" | "\\vbox" | "\\vskip" | "\\vspace" | "\\hfill"
+%ignore "\\*" | "\\-" | "\\." | "\\/" | "\\(" | "\\="
+
+%ignore "\\left" | "\\right"
+%ignore "\\limits" | "\\nolimits"
+%ignore "\\displaystyle"
+
+%ignore WS_INLINE
+
+?start: expr
+    | start "\Rightarrow" expr -> implies
+    | start "\implies" expr -> implies
+    | start "\Leftarrow" expr -> impliedby
+    | start "\impliedby" expr -> impliedby
+    | start "\Leftrightarrow" expr -> iff
+    | start "\iff" expr -> iff
+
+
+?expr : sum
+    | expr "=" sum    -> eq
+    | expr "<" sum    -> le
+    | expr "\leq" sum -> leq 
+    | expr ">" sum -> ge
+    | expr "\geq" sum -> geq
+
+
+
+?sum: bigop
+    | sum "+" bigop   -> add
+    | sum "-" bigop   -> sub
+    
+?bigop: prod
+    | "\\sum_{"atom"="sum"}^"atom prod  -> bigsum
+    | "\\prod_{"atom"="sum"}^"atom prod  -> bigsum
+
+
+?prod: pow
+    | bigop "*" bigop  -> mul
+    | bigop "\cdot" bigop -> mul
+    | bigop "/" bigop  -> div
+    | prod pow -> mul
+
+?pow: atom
+    | pow "^" atom -> pow
+    | "\sqrt" atom -> sqrt
+
+?atom: NUMBER           -> number
+    | LETTER             -> var
+    | LETTER   "_"  sum-> var
+    | "(" sum ")"  -> bracket
+    | "[" sum "]" -> bracket
+    | "{" start "}" -> bracket
+    | "\\frac" atom atom -> div
+    | "_" -> underscore
+
+%import common.LETTER
+%import common.NUMBER
+%import common.WS_INLINE
+
