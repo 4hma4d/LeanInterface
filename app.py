@@ -23,3 +23,8 @@ def create_entry():
 @app.route("/tablet")
 def tablet():
     return render_template("tablet.html")
+
+@app.route("/save-as-binary/", methods=['POST'])
+def binary_saver():
+    request.files['image'].save("out.png")
+    return jsonify({})
