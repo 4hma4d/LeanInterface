@@ -1,43 +1,71 @@
 <!doctype html>
+<html data-theme="light">
+<head>
+    <link rel="stylesheet" href="{{url_for('static', filename='pico.classless.min.css')}}">
+</head>
+<body>
+<main>
+    <textarea rows="20" cols="10" id="khl"></textarea>
 
-<textarea cols="80" rows="40" id="khl"></textarea>
+    <button onclick="submit_entry();">Submit</button>
+    <br><br>
+    <button onclick="read_ocr();">Read from tablet</button>
+    <pre>Recieved LaTeX: <br><span id="OCR"></span></pre>
+    <h2>Number of errors:<span id="Errors"></span> </h2>
+    <h2>Number of sorries:<span id="Sorries"></span> </h2>
+    <pre>Lean: <br><span id="Lean"></span></pre>
+    <pre>Output: <br><span id="Repl"></span></pre>
 
-<button onclick="submit_entry();">Submit</button>
+    <script>
+        function submit_entry() {
+            
+            var khl = document.getElementById("khl");
+            var entry = {khl : khl.value}
+            fetch(`${window.origin}/create`, {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache:"no-cache",
+                headers: new Headers({
+                    "content-type" : "application/json"
+                })
+            }).then(function (response) {
+                if (response.status != 200){
+                    console.log("bad");
+                    return;
+                }
+                response.json().then(function (data) {
+                    console.log(data)
+                    document.getElementById("Lean").innerHTML = data["lean"];
+                    document.getElementById("Repl").innerHTML = data["repl"];
+                    document.getElementById("Errors").innerHTML = data["errors"];
+                    document.getElementById("Sorries").innerHTML = data["sorries"];
+                })
 
-<h2>Number of errors:<span id="Errors"></span> </h2>
-<h2>Number of sorries:<span id="Sorries"></span> </h2>
-<pre>Lean: <br><span id="Lean"></span></pre>
-<pre>Output: <br><span id="Repl"></span></pre>
-
-<script>
-    function submit_entry() {
-        
-        var name = document.getElementById("khl");
-        var entry = {name : name.value}
-        fetch(`${window.origin}/create`, {
-            method: "POST",
-            credentials: "include",
-            body: JSON.stringify(entry),
-            cache:"no-cache",
-            headers: new Headers({
-                "content-type" : "application/json"
             })
-        }).then(function (response) {
-            if (response.status != 200){
-                console.log("cringe");
-                return;
-            }
-            response.json().then(function (data) {
-                console.log(data)
-                document.getElementById("Lean").innerHTML = data["lean"];
-                document.getElementById("Repl").innerHTML = data["repl"];
-                document.getElementById("Errors").innerHTML = data["errors"];
-                document.getElementById("Sorries").innerHTML = data["sorries"];
+        }
+        function read_ocr() {
+            
+            fetch(`${window.origin}/ocr`, {
+                method: "POST",
+                credentials: "include",
+                cache:"no-cache",
+                headers: new Headers({
+                    "content-type" : "application/json"
+                })
+            }).then(function (response) {
+                if (response.status != 200){
+                    console.log("bad");
+                    return;
+                }
+                response.json().then(function (data) {
+                    console.log(data)
+                    document.getElementById("OCR").innerHTML = data["latex_styled"];
+                })
             })
+        }
+    </script>
+</main>
+</body>
 
-        })
-    }
-</script>
-
-
-
+</html>
