@@ -1,4 +1,5 @@
 /venv
 /__pycache__
 /.vscode
+out.png
 credentials.txt
