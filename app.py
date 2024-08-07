@@ -4,10 +4,13 @@ from html import escape
 from .interpreter.interpret import interpret
 import requests
 import json
+import random
 
-creds = open("credentials.txt").read().splitlines()
+with open("./data/credentials.txt") as f:
+    creds = f.read().splitlines()
 ID = creds[0]
 KEY = creds[1]
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -32,16 +35,9 @@ def tablet():
 
 @app.route("/save-as-binary/", methods=['POST'])
 def binary_saver():
-    request.files['image'].save("out.png")
-    return jsonify({})
-
-@app.route("/ocr",  methods=['POST'])
-def read_tablet():
-    #Save file
-    
-    #Make Request
+    request.files['image'].save("./data/out.png")
     r = requests.post("https://api.mathpix.com/v3/text",
-        files={"file": open("out.png","rb")},
+        files={"file": open("./data/out.png","rb")},
         data={
         "options_json": json.dumps({
             "math_inline_delimiters": ["$", "$"],
@@ -53,5 +49,24 @@ def read_tablet():
             "app_key": KEY
         }
     )
-    res = make_response(jsonify(r.json()))
-    return res
+    with open("./data/req.json", "w") as f:
+        json.dump(r.json(), f)
+
+    return jsonify({})
+
+@app.route("/ocr",  methods=['POST'])
+def read_tablet():
+
+    with open("./data/req.json", "r") as f:
+        r = json.load(f)
+    with open("./data/old_req.json", "r") as f:
+        rold = json.load(f)
+
+    if r==rold:
+        return make_response(jsonify({}))
+    else:
+        with open("./data/old_req.json", "w") as f:
+            json.dump(r, f)
+        res = make_response(jsonify(r))
+        return res
+

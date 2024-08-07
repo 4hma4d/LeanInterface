@@ -9,7 +9,6 @@
 
     <button onclick="submit_entry();">Submit</button>
     <br><br>
-    <button onclick="read_ocr();">Read from tablet</button>
     <pre>Recieved LaTeX: <br><span id="OCR"></span></pre>
     <h2>Number of errors:<span id="Errors"></span> </h2>
     <h2>Number of sorries:<span id="Sorries"></span> </h2>
@@ -60,10 +59,23 @@
                 }
                 response.json().then(function (data) {
                     console.log(data)
-                    document.getElementById("OCR").innerHTML = data["latex_styled"];
+                    if (typeof(data["latex_styled"]) != "undefined"){
+                        console.log("Update")
+                        var target = document.getElementById("khl")
+
+                        if (target.setRangeText) {
+                            //if setRangeText function is supported by current browser
+                            target.setRangeText(data["latex_styled"])
+                        } else {
+                            target.focus()
+                            document.execCommand('insertText', false /*no UI*/, data["latex_styled"]);
+                        }                       
+                    }
                 })
             })
         }
+
+        setInterval(read_ocr, 1000)
     </script>
 </main>
 </body>

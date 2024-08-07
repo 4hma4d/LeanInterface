@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        function add(){
+            const khl = document.getElementById("khl")
+            const node = document.createElement("div")
+
+            node.innerText = "$$x^2$$"
+            khl.appendChild(node)
+            MathJax.typeset()
+            }
+    </script>
+</head>
+<body onload="window.setInterval(add, 1000)">
+    <h1>$$a=b^2$$</h1>
+    <div id="khl">
+
+    </div>
+</body>
+</html>
