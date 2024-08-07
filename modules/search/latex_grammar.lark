@@ -14,23 +14,12 @@
 
 %ignore WS_INLINE
 
-?start: expr
-    | start "\Rightarrow" expr -> implies
-    | start "\implies" expr -> implies
-    | start "\Leftarrow" expr -> impliedby
-    | start "\impliedby" expr -> impliedby
-    | start "\Leftrightarrow" expr -> iff
-    | start "\iff" expr -> iff
-
-
-?expr : sum
-    | expr "=" sum    -> eq
-    | expr "<" sum    -> le
-    | expr "\leq" sum -> leq 
-    | expr ">" sum -> ge
-    | expr "\geq" sum -> geq
-
-
+?start : sum
+    | start "=" sum    -> eq
+    | start "<" sum    -> le
+    | start "\leq" sum -> leq 
+    | start ">" sum -> ge
+    | start "\geq" sum -> geq
 
 ?sum: bigop
     | sum "+" bigop   -> add
@@ -49,9 +38,11 @@
 
 ?pow: atom
     | pow "^" atom -> pow
-    | "\sqrt" atom -> sqrt
+    | pow "^" "{-1}" -> inv
+    | "\\sqrt" atom -> sqrt
 
 ?atom: NUMBER           -> number
+    | "-" atom -> neg
     | LETTER             -> var
     | LETTER   "_"  sum-> var
     | "(" sum ")"  -> bracket
@@ -59,6 +50,9 @@
     | "{" start "}" -> bracket
     | "\\frac" atom atom -> div
     | "_" -> underscore
+    | "\\mathbb{R}" -> real
+    | "\\mathbb{Z}" -> int
+    | "\\mathbb{N}" -> nat
 
 %import common.LETTER
 %import common.NUMBER

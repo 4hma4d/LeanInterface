@@ -1,0 +1,3 @@
+<Lean>
+import Mathlib.Data.Real.Basic
+example (a b : \Z)

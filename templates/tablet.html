@@ -18,8 +18,34 @@
             };
             xhr.send(formData);
 
-        }
+        },
+            defaultTool : 'brush',
+            hiddenTools: [
+                'select',
+                'crop',
+                'pixelize',
+                'line',
+                'arrow',
+                'rect',
+                'ellipse',
+                // 'brush',
+                // 'eraser',
+                'text',
+                'rotate',
+                'resize',
+                // 'save',
+                // 'open',
+                // 'close',
+                // 'undo',
+                // 'redo',
+                // 'zoomin',
+                // 'zoomout',
+                'bucket',
+                'clear',
+                'settings',
+            ]
     })
     ptro.show();
+    // ptro.save()
     </script>
 </body>

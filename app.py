@@ -37,6 +37,9 @@ def binary_saver():
 
 @app.route("/ocr",  methods=['POST'])
 def read_tablet():
+    #Save file
+    
+    #Make Request
     r = requests.post("https://api.mathpix.com/v3/text",
         files={"file": open("out.png","rb")},
         data={
