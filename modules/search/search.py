@@ -5,7 +5,7 @@ from ...interpreter.interpret import interpret
 
 latex_grammar = open("modules/search/latex_grammar.lark").read()
 lean_grammar = open("modules/search/lean_grammar.lark").read()
-searchl = ["exact?", "ring", "aesop"]
+searchl = ["ring", "aesop"]
 
 my_parser = Lark(latex_grammar)
 my_parse = my_parser.parse
@@ -17,15 +17,25 @@ def toLean(text):
     mode = ""
     s=""
     for l in text.split("\n"): 
-        print(l)
         if l.strip()=="<Lean>":
             mode="Lean"
+        elif l.strip()=="</Lean>": 
+            mode=""        
         elif l.strip()=="<Math>": 
             mode="Math"
+        elif l.strip()=="</Math>": 
+            mode=""
         elif l.strip()=="<Auto>": 
             s += " := by sorry--<Auto> \n"
+        elif l.strip()=="<Calc>": 
+            s += " := by calc  \n"
+        elif l.strip()=="":
+            s += "\n"        
         elif mode=="Lean": 
             s+= l; s+= "\n"
+            s = s.replace(r"\R", "ℝ")
+            s = s.replace(r"\Z", "ℤ")
+            s = s.replace(r"\N", "ℕ")
         elif mode=="Math": 
             tree=my_parse(l)
             s += reconstructor.reconstruct(tree)
@@ -59,6 +69,7 @@ def auto(text):
                 working[n]=tac
                 print(tac)
                 break
+            else: continue
 
 
     return "".join([x + y for x, y in zip(l1[:-1], working)])+l1[-1]

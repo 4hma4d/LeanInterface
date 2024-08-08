@@ -2,14 +2,18 @@
 <html data-theme="light">
 <head>
     <link rel="stylesheet" href="{{url_for('static', filename='pico.classless.min.css')}}">
+
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 </head>
-<body>
+<body class="no-mathjax">
 <main>
+    <div class="mathjax" id="display">
+    </div>
     <textarea rows="20" cols="10" id="khl"></textarea>
 
     <button onclick="submit_entry();">Submit</button>
-    <br><br>
-    <pre>Recieved LaTeX: <br><span id="OCR"></span></pre>
     <h2>Number of errors:<span id="Errors"></span> </h2>
     <h2>Number of sorries:<span id="Sorries"></span> </h2>
     <pre>Lean: <br><span id="Lean"></span></pre>
@@ -58,24 +62,42 @@
                     return;
                 }
                 response.json().then(function (data) {
-                    console.log(data)
                     if (typeof(data["latex_styled"]) != "undefined"){
                         console.log("Update")
                         var target = document.getElementById("khl")
+                        var latex = data["latex_styled"]
 
-                        if (target.setRangeText) {
-                            //if setRangeText function is supported by current browser
-                            target.setRangeText(data["latex_styled"])
-                        } else {
-                            target.focus()
-                            document.execCommand('insertText', false /*no UI*/, data["latex_styled"]);
-                        }                       
+                        if (latex[0]=="=")
+                            {expr = "<Math>\n_"+latex+"\n</Math>\n<Auto>\n"}
+                            else{expr = "<Math>\n"+latex+"\n</Math>\n\n"}
+
+                        target.focus()
+                        document.execCommand('insertText', false /*no UI */, expr);
+                 
                     }
                 })
             })
         }
 
+        function sanitizeMath(text){
+            s = text
+            s = s.replaceAll("<Math>","\\[")
+            s = s.replaceAll("</Math>","\\]")
+            s = s.replaceAll("<Auto>", "")
+            s = s.replaceAll("_=", "=")
+            s = s.replaceAll("\n\n", "\n")
+            return s
+        }
+
+        function displayMath(){
+            var khl = document.getElementById("khl")
+            var target=document.getElementById("display")
+            target.innerText = sanitizeMath(khl.value)
+            MathJax.typeset()
+        }
+
         setInterval(read_ocr, 1000)
+        setInterval(displayMath, 1000)
     </script>
 </main>
 </body>

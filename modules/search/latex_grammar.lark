@@ -16,6 +16,7 @@
 
 ?start : sum
     | start "=" sum    -> eq
+    | "=" start -> eq
     | start "<" sum    -> le
     | start "\leq" sum -> leq 
     | start ">" sum -> ge
@@ -42,7 +43,6 @@
     | "\\sqrt" atom -> sqrt
 
 ?atom: NUMBER           -> number
-    | "-" atom -> neg
     | LETTER             -> var
     | LETTER   "_"  sum-> var
     | "(" sum ")"  -> bracket

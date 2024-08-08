@@ -14,11 +14,11 @@ KEY = creds[1]
 app = Flask(__name__)
 
 @app.route("/")
-def hello_world():
+def index():
     return render_template("index.html")
 
 @app.route('/create', methods=['POST'])
-def create_entry():
+def Process():
     req = request.get_json()
     khl = req['khl']
     lean = toLean(khl)

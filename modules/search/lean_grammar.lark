@@ -4,6 +4,7 @@
 
 ?start : sum
     | start "=" sum    -> eq
+    | "=" start -> eq
     | start "<" sum    -> le
     | start "≤" sum -> leq 
     | start ">" sum -> ge
@@ -30,7 +31,6 @@
     | "√" atom -> sqrt
 
 ?atom: NUMBER           -> number
-    | "-" atom         -> neg
     | LETTER             -> var
     | LETTER " "sum-> var
     | "(" sum ")"  -> bracket
