@@ -1,51 +1,34 @@
 <!DOCTYPE html>
 <head>
-    <script src="{{url_for('static', filename='painterro-1.2.87.min.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-draw@1.20.3/dist/bundle.js"></script>
 </head>
 <body>
     <script>
-        var ptro = Painterro({
-            saveHandler: function (image, done) {
-            var formData = new FormData();
-            formData.append('image', image.asBlob());
-            // you can also pass suggested filename 
-            // formData.append('image', image.asBlob(), image.suggestedFileName());
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', `${window.origin}/save-as-binary`, true);
-            xhr.onload = xhr.onerror = function () {
-            // after saving is done, call done callback
-            done(false); //done(true) will hide painterro, done(false) will leave opened
-            };
-            xhr.send(formData);
 
-        },
-            defaultTool : 'brush',
-            hiddenTools: [
-                'select',
-                'crop',
-                'pixelize',
-                'line',
-                'arrow',
-                'rect',
-                'ellipse',
-                // 'brush',
-                // 'eraser',
-                'text',
-                'rotate',
-                'resize',
-                // 'save',
-                // 'open',
-                // 'close',
-                // 'undo',
-                // 'redo',
-                // 'zoomin',
-                // 'zoomout',
-                'bucket',
-                // 'clear',
-                'settings',
-            ]
-    })
-    ptro.show();
-    // ptro.save()
+	// Create the editor!
+	const editor = new jsdraw.Editor(document.body);
+
+	// Adds the defualt toolbar
+	const toolbar = editor.addToolbar();
+
+        // Increases the minimum height of the editor
+    editor.getRootElement().style.height = `${window.screen.height*3/4}px`;
+    const addToHistory = false;
+    editor.dispatch(editor.setBackgroundStyle({ 
+        autoresize: true,
+        color: jsdraw.Color4.white
+     }), addToHistory);
+    // Adding tags to a toolbar button allows different styles to be applied.
+    // Also see addActionButton.
+    toolbar.addSaveButton(() => {
+        const image = editor.toSVG().outerHTML;
+        // Do something with saveData
+        var formData = new FormData();
+        formData.append('image', image);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', `${window.origin}/save`, true);
+        xhr.send(formData);
+
+    });
     </script>
 </body>

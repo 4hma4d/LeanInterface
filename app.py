@@ -5,6 +5,7 @@ from .interpreter.interpret import interpret
 import requests
 import json
 import random
+from cairosvg import svg2png
 
 with open("./data/credentials.txt") as f:
     creds = f.read().splitlines()
@@ -33,9 +34,10 @@ def Process():
 def tablet():
     return render_template("tablet.html")
 
-@app.route("/save-as-binary/", methods=['POST'])
+@app.route("/save/", methods=['POST'])
 def binary_saver():
-    request.files['image'].save("./data/out.png")
+    svg_code = request.form['image']
+    svg2png(bytestring=svg_code,write_to='./data/out.png')
     r = requests.post("https://api.mathpix.com/v3/text",
         files={"file": open("./data/out.png","rb")},
         data={
