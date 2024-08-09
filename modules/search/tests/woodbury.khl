@@ -1,0 +1,58 @@
+<Lean>
+import Mathlib.Data.Matrix.Invertible
+import Mathlib.Data.Matrix.Basic
+import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+import Mathlib.Data.Real.Basic
+
+
+open Matrix
+
+variable {n k : Type*} [Fintype n] [DecidableEq n] [Fintype k] [DecidableEq k]
+variable {R : Type*} [CommRing R]
+variable (E: Matrix n n R) (F : Matrix n k R) (G : Matrix k k R) (H : Matrix k n R)
+def I: Matrix n n R :=  1
+
+theorem woodbury_identity (this: Invertible E) (this1 : Invertible G)(this2: Invertible (⅟G + H * ⅟E* F)) :
+<Math>
+(E+F G H)^{-1}=E^{-1}-E^{-1} F\left(G^{-1}+H E^{-1} F\right)^{-1} H E^{-1}
+</Math>
+<Lean>
+:= by 
+refine inv_eq_right_inv ?h
+calc
+<Math>
+(E+F G H)\left(E^{-1}-E^{-1} F\left(G^{-1}+H E^{-1} F\right)^{-1} H E^{-1}\right)
+</Math>
+<Auto>
+<Math>
+_ = E E^{-1}-E E^{-1} F\left(G^{-1}+H E^{-1} F\right)^{-1} H E^{-1}+F G H E^{-1}-FG H E^{-1} F\left(G^{-1}+H E^{-1} F\right)^{-1} H E^{-1}
+</Math>
+<Auto>
+<Math>
+\left(I+F G H E^{-1}\right)-\left(F\left(G^{-1}+H E^{-1} F\right)^{-1} H E^{-1}+F G H E^{-1} F\left(G^{-1}+H E^{-1} F\right)^{-1} H E^{-1}\right)
+</Math>
+<Auto>
+<Math>
+_=I+F G H E^{-1}-\left(F+F G H E^{-1} F\right)\left(G^{-1}+H E^{-1} F\right)^{-1} H E^{-1}
+</Math>
+<Auto>
+<Math>
+_=I+F G H E^{-1}-F G\left(G^{-1}+H E^{-1} F\right)\left(G^{-1}+H E^{-1} F\right)^{-1} H E^{-1}
+</Math>
+<Auto>
+<Math>
+_=I+F G H E^{-1}-F G I H E^{-1}
+</Math>
+<Auto>
+<Math>
+_=I+F G H E^{-1}-F G H E^{-1}
+</Math>
+<Auto>
+<Math>
+_=1
+</Math>
+<Auto>
+
+
+
+
