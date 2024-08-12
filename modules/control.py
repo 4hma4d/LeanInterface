@@ -1,7 +1,7 @@
 from lark import Lark, Transformer, v_args
 from lark.reconstruct import Reconstructor
 import lark
-from ...interpreter.interpret import interpret
+from ..interpreter.interpret import interpret
 
 latex_grammar = open("modules/search/latex_grammar.lark").read()
 lean_grammar = open("modules/search/lean_grammar.lark").read()
@@ -24,7 +24,7 @@ def toLean(text):
         elif l.strip()=="<Math>": 
             mode="Math"
         elif l.strip()=="</Math>": 
-            mode=""
+            mode="Lean"
         elif l.strip()=="<Auto>": 
             s += " := by sorry--<Auto> \n"
         elif l.strip()=="<Calc>": 
@@ -39,8 +39,6 @@ def toLean(text):
         elif mode=="Math": 
             tree=my_parse(l)
             s += reconstructor.reconstruct(tree)
-        elif mode=="":
-            continue
         else: 
             print(l)
             assert False
