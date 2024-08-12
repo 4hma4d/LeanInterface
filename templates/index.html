@@ -6,16 +6,31 @@
 
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
+    <style>
+        .flex-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-content: space-between;
+        } 
+        .boxxed {
+            border: 5px solid black;
+            margin: 0 10px;
+        }
+    </style>
 </head>
 <body class="no-mathjax">
 <main>
     <div class="mathjax" id="display">
     </div>
-    <textarea rows="20" cols="10" id="khl"></textarea>
+    <textarea rows="15" cols="10" id="khl"></textarea>
 
     <button onclick="submit_entry();">Submit</button>
-    <h2>Number of errors:<span id="Errors"></span> </h2>
-    <h2>Number of sorries:<span id="Sorries"></span> </h2>
+    <h2 id="status"></h2>
+    <div class="flex-container">
+        <h2 class="boxxed" id="erbox"> Number of errors:<span id="Errors">0</span>&nbsp; </h2>
+        <h2 class="boxxed" id="srbox"> Number of sorries:<span id="Sorries">0</span> &nbsp;</h2>
+    </div>
     <pre>Lean: <br><span id="Lean"></span></pre>
     <pre>Output: <br><span id="Repl"></span></pre>
 
@@ -41,8 +56,28 @@
                     console.log(data)
                     document.getElementById("Lean").innerHTML = data["lean"];
                     document.getElementById("Repl").innerHTML = data["repl"];
-                    document.getElementById("Errors").innerHTML = data["errors"];
-                    document.getElementById("Sorries").innerHTML = data["sorries"];
+                    let ner = data["errors"];
+                    let nsr = data["sorries"];
+                    let erbox = document.getElementById("erbox")
+                    let srbox = document.getElementById("srbox")
+                    document.getElementById("Errors").innerHTML = ner;
+                    document.getElementById("Sorries").innerHTML = nsr;
+                    if (ner ==0){
+                            erbox.style.borderColor = "green"}
+                        else{
+                            erbox.style.borderColor = "red"
+                    }
+                    if (nsr ==0){
+                            srbox.style.borderColor = "green"}
+                        else{
+                            srbox.style.borderColor = "red"
+                    }
+                    if (ner==0 && nsr==0){
+                        document.getElementById("status").innerHTML = "Proof is complete"
+                        }
+                        else{
+                            document.getElementById("status").innerHTML = "Proof is not complete"
+                        }
                 })
 
             })
@@ -84,6 +119,7 @@
             s = s.replaceAll("<Math>","\\[")
             s = s.replaceAll("</Math>","\\]")
             s = s.replaceAll("<Auto>", "")
+            s = s.replaceAll("<Calc>", "Proof:")
             s = s.replaceAll("_=", "=")
             s = s.replaceAll("\n\n", "\n")
             return s
