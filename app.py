@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, jsonify, make_response
-from .modules.search.search import toLean
+from .modules.control import toLean
 from html import escape
 from .interpreter.interpret import interpret
 import requests

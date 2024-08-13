@@ -27,8 +27,8 @@
     | sum "-" bigop   -> sub
     
 ?bigop: prod
-    | "\\sum_{"atom"="sum"}^"atom prod  -> bigsum
-    | "\\prod_{"atom"="sum"}^"atom prod  -> bigsum
+    | "\\sum_{"atom"="sum"}^"atom bigop  -> bigsum
+    | "\\prod_{"atom"="sum"}^"atom bigop  -> bigprod
 
 
 ?prod: pow

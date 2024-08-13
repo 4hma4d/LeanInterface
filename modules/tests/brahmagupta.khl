@@ -1,20 +1,23 @@
 <Lean>
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Ring
-example {a b m n : ℤ} (hx : b^2 = 2*a^2) (hy : a*m+b*n = 1) : (2*a*n+b*m)^2 = 2 := by
-  calc
+example {a b m n : ℤ} (hx : 
+<Math>
+b^2 = 2a^2
+</Math>
+) (hy : 
+<Math>
+am+bn = 1
+</Math>
+) : 
+<Math>
+(2an+bm)^2 = 2 
+</Math>
+<Calc>
 <Math>
 (2 a n+b m)^{2}
 </Math>
 
-<Math>
-_ =4 a^{2} n^{2}+4 a n b m+b^{2} m^{2}
-</Math>
-<Auto>
-<Math>
-_=2\left(a^{2} m^{2}+2 a n b m+b^{2} n^{2}\right)+\left(4 a^{2} n^{2}+b^{2} m^{2}-2 a^{2} m^{2}-2 b^{2} n^{2}\right)
-</Math>
-<Auto>
 <Math>
 _=2(a m+b n)^{2}+\left(m^{2}-2n^{2}\right)\left(b^{2}-2 a^{2}\right)
 </Math>
